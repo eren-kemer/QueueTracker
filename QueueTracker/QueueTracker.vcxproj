@@ -57,7 +57,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>"C:\Users\erenk\AppData\Roaming\bakkesmod\bakkesmod\bakkesmodsdk\lib"</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>"C:\Users\erenk\AppData\Roaming\bakkesmod\bakkesmod\bakkesmodsdk\lib";%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ProjectReference>
       <UseLibraryDependencyInputs />
