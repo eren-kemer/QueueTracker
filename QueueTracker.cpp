@@ -1,12 +1,14 @@
+#include "pch.h"
 #include "QueueTracker.h"
 
+//static const std::string savefile = "bakkesmod/data/queuetimetracker.data"; // For possible later use
+BAKKESMOD_PLUGIN(QueueTracker, "Queue time tracker", plugin_version, PLUGINTYPE_FREEPLAY)
 
-static const std::string savefile = "bakkesmod/data/queuetimetracker.data";
-
-BAKKESMOD_PLUGIN(QueueTracker, "Queue time tracker", "0.1", PLUGINTYPE_FREEPLAY)
+std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 
 void QueueTracker::onLoad()
 {
+	_globalCvarManager = cvarManager;
 	queueStart_time, queueElapsed_time = time(NULL);
 	cvarManager->log("QueueTracker loaded");
 
