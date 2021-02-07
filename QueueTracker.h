@@ -18,7 +18,9 @@ private:
 public:
 	virtual void onLoad();
 	virtual void onUnload();
-	time_t queueStart_time, queueElapsed_time;
+	time_t queueStart_time;
+	long int queueElapsed_time;
+	bool needToAnnounce;
 	std::string queueElapsed_str;
 
 };

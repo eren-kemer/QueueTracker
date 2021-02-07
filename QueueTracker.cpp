@@ -10,10 +10,11 @@ void QueueTracker::onLoad()
 {
 	_globalCvarManager = cvarManager;
 	queueStart_time, queueElapsed_time = time(NULL);
+	needToAnnounce = false;
 	cvarManager->log("QueueTracker loaded");
 
 	gameWrapper->HookEventWithCaller<ServerWrapper>(
-		"Function ProjectX.CheckReservation_X.StartSearch",
+		"Function TAGame.GFxData_Matchmaking_TA.StartMatchmaking",
 		bind(
 			&QueueTracker::StartTimer,
 			this,
@@ -41,6 +42,7 @@ void QueueTracker::onUnload()
 void QueueTracker::StartTimer(ServerWrapper caller, void* params, std::string eventName) {
 
 	queueStart_time = time(NULL);
+	needToAnnounce = true;
 	cvarManager->log("Queue time logged!");
 }
 
@@ -49,7 +51,7 @@ void QueueTracker::EndTimer(ServerWrapper caller, void* params, std::string even
 	auto playlist = mmrWrapper.GetCurrentPlaylist();
 	auto playlistName = GetPlaylistName(playlist);
 
-	if (playlistName != "Queueless" && playlistName != "") {
+	if (playlistName != "Queueless" && playlistName != "" && needToAnnounce) {
 		queueElapsed_time = time(NULL) - queueStart_time;
 
 		if (queueElapsed_time >= 60) {
@@ -58,9 +60,10 @@ void QueueTracker::EndTimer(ServerWrapper caller, void* params, std::string even
 		else {
 			queueElapsed_str = std::to_string(queueElapsed_time) + " seconds!";
 		}
-
+		
 		cvarManager->log("Match found in " + queueElapsed_str);
 		gameWrapper->Toast("QueueTracker", "Match found in " + queueElapsed_str);
+		needToAnnounce = false;
 	}
 }
 
