@@ -1,6 +1,11 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by TemplateChanges.rc
+// Von Microsoft Visual C++ generierte Includedatei.
+// Verwendet durch QueueTracker.rc
+//
+#define VERSION_MINOR                   0
+#define VERSION_PATCH                   0
+#define VERSION_BUILD                   0
+#define VERSION_MAJOR                   1
 
 // Next default values for new objects
 // 

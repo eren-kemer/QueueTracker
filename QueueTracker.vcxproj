@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="QueueTracker.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="version.h" />
   </ItemGroup>
   <ItemGroup>
