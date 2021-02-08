@@ -18,4 +18,4 @@ Currently the plugin only works for the party leader, but party member functiona
 - Only the party leader can see the queue time
 
 
-Please report any issues and feedback on Github or mail! 
+Please report any issues and feedback on Github, Discord (Kemeren#5968) or mail! 
