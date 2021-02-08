@@ -9,9 +9,29 @@ std::shared_ptr<CVarManagerWrapper> _globalCvarManager;
 void QueueTracker::onLoad()
 {
 	_globalCvarManager = cvarManager;
-	time_queue_start, time_queue_difference = time(NULL);
-	should_be_announced = false;
 
+	//First we check if the QueueTracker is currently enabled or not. If it's enabled, we should hook the events.
+	auto queuetracker_is_enabled = cvarManager->registerCvar("queuetracker_is_enabled", "1", "Enable QueueTracker", true, true, 0, true, 1);
+	if (queuetracker_is_enabled.getBoolValue()) {
+		HookEvents();
+	}
+
+	//Here we check the setting value after it was changed, so we can (un)hook accordingly.
+	queuetracker_is_enabled.addOnValueChanged([this](std::string, CVarWrapper cvar) {
+		if (cvar.getBoolValue()) {
+			HookEvents();
+		}
+		else {
+			UnHookEvents();
+		}
+		});
+	
+
+	time_queue_start, time_queue_difference = time(NULL);
+}
+
+void QueueTracker::HookEvents() {
+	//Function gets called for party lead only and gets called again after matchmaking errors!
 	gameWrapper->HookEventWithCaller<ServerWrapper>(
 		"Function ProjectX.CheckReservation_X.StartSearch",
 		bind(
@@ -21,7 +41,7 @@ void QueueTracker::onLoad()
 			std::placeholders::_2,
 			std::placeholders::_3)
 		);
-
+	//Function gets called for all party members!
 	gameWrapper->HookEventWithCaller<ServerWrapper>(
 		"Function TAGame.GameEvent_TA.PostBeginPlay",
 		bind(
@@ -31,7 +51,16 @@ void QueueTracker::onLoad()
 			std::placeholders::_2,
 			std::placeholders::_3)
 		);
+	cvarManager->log("QueueTracker events hooked!");
 }
+
+void QueueTracker::UnHookEvents() {
+	gameWrapper->UnhookEvent("Function ProjectX.CheckReservation_X.StartSearch");
+	gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.PostBeginPlay");
+	cvarManager->log("QueueTracker events unhooked!");
+}
+
+
 
 void QueueTracker::onUnload()
 {

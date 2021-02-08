@@ -15,14 +15,17 @@ private:
 	void EndTimer(ServerWrapper caller, void* params, std::string eventName);
 	void StartTimer(ServerWrapper caller, void* params, std::string eventName);
 	std::string GetPlaylistName(int playlistId);
-	time_t time_queue_start;
-	long int time_queue_difference;
-	bool should_be_announced;
-	std::string time_queue_difference_str;
+	time_t time_queue_start{time_t(NULL)};
+	long int time_queue_difference{0};
+	bool should_be_announced{ false };
+	std::string time_queue_difference_str { "" };
+
 public:
 	virtual void onLoad();
+	void HookEvents();
+	void UnHookEvents();
 	virtual void onUnload();
-
+	
 
 };
 
