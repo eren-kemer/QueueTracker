@@ -15,12 +15,10 @@ private:
 	void EndTimer(ServerWrapper caller, void* params, std::string eventName);
 	void StartTimer(ServerWrapper caller, void* params, std::string eventName);
 	std::string GetPlaylistName(int playlistId);
-	time_t queueStart_time;
-	long int queueElapsed_time;
-	bool needToAnnounce;
-	bool isCancelled;
-	bool isSearching;
-	std::string queueElapsed_str;
+	time_t time_queue_start;
+	long int time_queue_difference;
+	bool should_be_announced;
+	std::string time_queue_difference_str;
 public:
 	virtual void onLoad();
 	virtual void onUnload();
