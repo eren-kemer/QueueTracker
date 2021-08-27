@@ -15,7 +15,7 @@ Currently the plugin only works for the party leader, but party member functiona
 
 **Known Issues**:
 - Another player cancelling will re-set the timer.
-- Only the party leader can see the queue time
+- ~~Only the party leader can see the queue time~~ (works now)
 
 
 Please report any issues and feedback on Github, Discord (Kemeren#5968) or mail! 
