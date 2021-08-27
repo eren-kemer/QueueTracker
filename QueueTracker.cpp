@@ -70,6 +70,7 @@ void QueueTracker::StartTimer(bool isSearching) {
 	if(isSearching){
 		if (!timer_already_started) {
 			timer_already_started = true;
+			should_be_announced = true;
 			time_queue_start = time(NULL);
 			cvarManager->log("Queue time logged!");
 		}
@@ -86,11 +87,13 @@ void QueueTracker::EndTimer() {
 	auto playlist = mmrWrapper.GetCurrentPlaylist();
 	auto playlistName = GetPlaylistName(playlist);
 
-	if (playlistName != "Queueless") {
-		time_queue_difference = time(NULL) - time_queue_start;
+	if (playlistName != "Queueless" && should_be_announced) {
 
+		time_queue_difference = time(NULL) - time_queue_start;
+		should_be_announced = false;
 		cvarManager->log("QueueTracker: Match found in " + std::to_string(time_queue_difference) + " seconds!");
 		gameWrapper->Toast("QueueTracker", "Match found in " + std::to_string(time_queue_difference) + " seconds!");
+
 	}
 }
 

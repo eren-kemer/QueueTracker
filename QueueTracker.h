@@ -18,6 +18,7 @@ private:
 	time_t time_queue_start{time_t(NULL)};
 	long int time_queue_difference{0};
 	bool timer_already_started{ false };
+	bool should_be_announced{ false };
 public:
 	virtual void onLoad();
 	void HookEvents();
