@@ -12,14 +12,12 @@ class QueueTracker: public BakkesMod::Plugin::BakkesModPlugin
 {
 private:
 
-	void EndTimer(ServerWrapper caller, void* params, std::string eventName);
-	void StartTimer(ServerWrapper caller, void* params, std::string eventName);
+	void EndTimer();
+	void StartTimer(bool bValue);
 	std::string GetPlaylistName(int playlistId);
 	time_t time_queue_start{time_t(NULL)};
 	long int time_queue_difference{0};
-	bool should_be_announced{ false };
-	std::string time_queue_difference_str { "" };
-
+	bool timer_already_started{ false };
 public:
 	virtual void onLoad();
 	void HookEvents();

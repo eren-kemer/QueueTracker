@@ -31,31 +31,31 @@ void QueueTracker::onLoad()
 }
 
 void QueueTracker::HookEvents() {
-	//Function gets called for party lead only and gets called again after matchmaking errors!
-	gameWrapper->HookEventWithCaller<ServerWrapper>(
-		"Function ProjectX.CheckReservation_X.StartSearch",
-		bind(
-			&QueueTracker::StartTimer,
-			this,
-			std::placeholders::_1,
-			std::placeholders::_2,
-			std::placeholders::_3)
-		);
-	//Function gets called for all party members!
-	gameWrapper->HookEventWithCaller<ServerWrapper>(
-		"Function TAGame.GameEvent_TA.PostBeginPlay",
-		bind(
-			&QueueTracker::EndTimer,
-			this,
-			std::placeholders::_1,
-			std::placeholders::_2,
-			std::placeholders::_3)
-		);
+	struct Params {
+		unsigned long bValue;
+	};
+
+	gameWrapper->HookEventWithCallerPost<ActorWrapper>("Function ProjectX.PartyMessage_SearchStatus_X.SetIsSearching",
+		[this](auto caller, void* raw_param, ...)
+		{
+			Params* param_t = static_cast<Params*>(raw_param);
+
+			bool isSearching = param_t->bValue;
+			QueueTracker::StartTimer(isSearching);
+		}
+	);
+
+	gameWrapper->HookEventWithCallerPost<ActorWrapper>("Function TAGame.GameEvent_TA.PostBeginPlay",
+		[this](auto caller, void* raw_param, ...)
+		{
+			QueueTracker::EndTimer();
+		}
+	);
 	cvarManager->log("QueueTracker events hooked!");
 }
 
 void QueueTracker::UnHookEvents() {
-	gameWrapper->UnhookEvent("Function ProjectX.CheckReservation_X.StartSearch");
+	gameWrapper->UnhookEvent("Function ProjectX.PartyMessage_SearchStatus_X.SetIsSearching");
 	gameWrapper->UnhookEvent("Function TAGame.GameEvent_TA.PostBeginPlay");
 	cvarManager->log("QueueTracker events unhooked!");
 }
@@ -66,31 +66,31 @@ void QueueTracker::onUnload()
 {
 }
 
-void QueueTracker::StartTimer(ServerWrapper caller, void* params, std::string eventName) {
-	time_queue_start = time(NULL);
-	should_be_announced = true;
-	cvarManager->log("Queue time logged!");
+void QueueTracker::StartTimer(bool isSearching) {
+	if(isSearching){
+		if (!timer_already_started) {
+			timer_already_started = true;
+			time_queue_start = time(NULL);
+			cvarManager->log("Queue time logged!");
+		}
+	}
+	else {
+		timer_already_started = false;
+		cvarManager->log("Timer cancelled!");
+	}
 }
 
-void QueueTracker::EndTimer(ServerWrapper caller, void* params, std::string eventName) {
+void QueueTracker::EndTimer() {
 	auto mmrWrapper = gameWrapper->GetMMRWrapper();
 	if (mmrWrapper.memory_address == NULL) return;
 	auto playlist = mmrWrapper.GetCurrentPlaylist();
 	auto playlistName = GetPlaylistName(playlist);
 
-	if (playlistName != "Queueless" && should_be_announced) {
+	if (playlistName != "Queueless") {
 		time_queue_difference = time(NULL) - time_queue_start;
 
-		if (time_queue_difference >= 60) {
-			time_queue_difference_str = std::to_string(time_queue_difference / 60) + " minute(s)!";
-		}
-		else {
-			time_queue_difference_str = std::to_string(time_queue_difference) + " seconds!";
-		}
-		
-		cvarManager->log("QueueTracker: Match found in " + time_queue_difference_str);
-		gameWrapper->Toast("QueueTracker", "Match found in " + time_queue_difference_str);
-		should_be_announced = false;
+		cvarManager->log("QueueTracker: Match found in " + std::to_string(time_queue_difference) + " seconds!");
+		gameWrapper->Toast("QueueTracker", "Match found in " + std::to_string(time_queue_difference) + " seconds!");
 	}
 }
 
