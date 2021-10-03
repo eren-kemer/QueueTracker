@@ -6,16 +6,13 @@ It will show you a notification with the time spent in queue after joining a mat
 
 For the plugin to work you have to tick **Enable notificiations** under **Misc** in the BakkesMod settings (F2 by default)!
 
-Currently the plugin only works for the party leader, but party member functionality is already planned!
-
 
 **Planned features**:
 - Add queue-time history per playlist
-- Eventually add average queue-times per playlist
+- Eventually add average queue-times per playlist, region, rank, Time of Day,  etc.
 
 **Known Issues**:
-- Another player cancelling will re-set the timer.
-- ~~Only the party leader can see the queue time~~ (works now)
+- None?
 
 
 Please report any issues and feedback on Github, Discord (Kemeren#5968) or mail! 
